@@ -1,0 +1,15 @@
+# FastAPI and server
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-dotenv==1.0.1
+pydantic==2.10.5
+
+# LLM Providers
+google-genai==1.59.0
+openai==1.59.7
+
+# Optional: For future Claude support
+# anthropic==0.42.0
+
+# CORS
+python-multipart==0.0.20
