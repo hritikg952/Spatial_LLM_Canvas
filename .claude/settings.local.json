@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.\\\\venv\\\\Scripts\\\\Activate.ps1)",
+      "Bash(pip install *)",
+      "Bash(python -m pip install -r requirements.txt)",
+      "Bash(venv/Scripts/python.exe --version)",
+      "Bash(py -0)",
+      "Bash(venv/Scripts/python.exe -m pip index versions pydantic)",
+      "Bash(venv/Scripts/pip.exe install *)"
+    ]
+  }
+}
