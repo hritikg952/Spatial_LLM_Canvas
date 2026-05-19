@@ -4,7 +4,7 @@ import os
 
 class GeminiLLMService:
   
-  def __init__(self, model_name: str = "gemini-2.0-flash", temperature: float = 0.7):
+  def __init__(self, model_name: str = "gemini-2.5-flash", temperature: float = 0.7):
     """
     Initialize the Gemini client.
     
