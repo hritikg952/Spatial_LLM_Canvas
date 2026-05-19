@@ -1,3 +1,6 @@
+# Claude Code notify signals
+*claude-notify-signals*
+
 # Python
 __pycache__/
 *.py[cod]
