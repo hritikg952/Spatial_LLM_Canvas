@@ -1,240 +1,93 @@
-# Modular LLM Architecture - Quick Start
+# Spatial LLM Canvas — Backend
 
-## ✅ Implementation Complete!
+FastAPI service that exposes LLM-powered chat endpoints. Currently uses Google Gemini as the only active provider.
 
-I've implemented a **modular LLM architecture** using the **Strategy Pattern** and **Dependency Injection** in your FastAPI backend.
+## Prerequisites
 
-## 🏗️ Architecture Components
+- Python 3.10+
+- A [Google AI Studio](https://aistudio.google.com/) API key
 
-### 1. **Abstract Interface** (`services/llm_service.py`)
-
-```python
-class LLMService(ABC):
-    @abstractmethod
-    async def generate_response(...)
-    @abstractmethod
-    async def stream_response(...)
-    @abstractmethod
-    def get_available_models(...)
-```
-
-### 2. **Concrete Implementations**
-
-- ✅ `GeminiProvider` (`services/gemini_provider.py`)
-- ✅ `OpenAIProvider` (`services/openai_provider.py`)
-- 📝 `ClaudeProvider` (example provided in `services/claude_provider_example.py`)
-
-### 3. **Factory + Dependency Injection** (`services/llm_factory.py`)
-
-```python
-class LLMFactory:
-    _providers = {
-        "gemini": GeminiProvider,
-        "openai": OpenAIProvider,
-    }
-
-    @classmethod
-    def create(cls, provider: str) -> LLMService:
-        # Returns the appropriate provider instance
-```
-
-### 4. **Provider-Agnostic Router** (`routers/chatRouter/chatRouter.py`)
-
-The router depends **only** on the `LLMService` abstraction:
-
-```python
-llm_service: LLMService = LLMFactory.create(request.provider)
-response = await llm_service.generate_response(...)
-```
-
-## 🎯 Key Benefits
-
-✅ **Loose Coupling**: Router doesn't know about specific providers
-✅ **Easy Extension**: Add new providers without changing router code
-✅ **Runtime Selection**: Choose provider based on user input
-✅ **Testable**: Easy to mock the LLMService interface
-✅ **SOLID Principles**: Follows Open/Closed Principle
-
-## 🚀 API Endpoints
-
-### POST `/chat/generate`
-
-Generate a complete response from any provider.
-
-**Example Request:**
-
-```bash
-curl -X POST http://localhost:8000/chat/generate \
-  -H "Content-Type: application/json" \
-  -d '{
-    "provider": "gemini",
-    "model": "gemini-2.0-flash-exp",
-    "prompt": "Explain the Strategy Pattern",
-    "temperature": 0.7
-  }'
-```
-
-### POST `/chat/stream`
-
-Stream responses using Server-Sent Events.
-
-### GET `/chat/providers`
-
-List all available providers.
-
-### GET `/chat/models/{provider}`
-
-Get available models for a specific provider.
-
-## 📦 Setup Instructions
-
-### 1. Install Dependencies
+## Setup
 
 ```bash
 cd backend
-.\venv\Scripts\activate  # Windows
-source venv/Scripts/activate # Bash
+
+# Create and activate a virtual environment
+python -m venv venv
+source venv/bin/activate        # macOS / Linux
+# venv\Scripts\activate         # Windows
+
 pip install -r requirements.txt
 ```
 
-### 2. Configure API Keys
+Copy the environment template and add your API key:
 
-Edit `.env` file:
-
-```env
-GOOGLE_GENAI_API_KEY=your_actual_google_api_key
-OPENAI_API_KEY=your_actual_openai_api_key
+```bash
+cp .env.example .env
+# Edit .env and set GOOGLE_GENAI_API_KEY=<your key>
 ```
 
-### 3. Run the Server
+## Run
 
 ```bash
 uvicorn main:app --reload
 ```
 
-The server will start at `http://localhost:8000`
+Server starts at `http://localhost:8000`.
 
-## 🔧 Adding a New Provider (e.g., Claude)
+Interactive API docs: `http://localhost:8000/docs`
 
-### Step 1: Create Provider Class
+## Endpoints
 
-```python
-# services/claude_provider.py
-from services.llm_service import LLMService
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/` | Health check |
+| `POST` | `/chat/generate` | Generate a response from Gemini |
+| `GET` | `/chat/models` | List available Gemini models |
 
-class ClaudeProvider(LLMService):
-    # Implement all abstract methods
-    async def generate_response(self, ...): ...
-    async def stream_response(self, ...): ...
-    def get_available_models(self): ...
+### Generate a response
+
+```bash
+curl -X POST http://localhost:8000/chat/generate \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "Explain recursion in one sentence."}'
 ```
 
-### Step 2: Register in Factory
-
-```python
-# services/llm_factory.py
-from .claude_provider import ClaudeProvider
-
-class LLMFactory:
-    _providers = {
-        "gemini": GeminiProvider,
-        "openai": OpenAIProvider,
-        "claude": ClaudeProvider,  # ← Add this line
-    }
+Response:
+```json
+{
+  "content": "...",
+  "model": "gemini-2.0-flash",
+  "provider": "Gemini",
+  "usage": {}
+}
 ```
 
-### Step 3: Done! 🎉
+### Streaming
 
-No changes needed to:
+Pass `"stream": true` in the request body to receive a `text/event-stream` response with newline-delimited JSON chunks.
 
-- ❌ Router endpoints
-- ❌ Request/response models
-- ❌ Business logic
-
-The router automatically supports the new provider!
-
-## 📁 File Structure
+## Project Structure
 
 ```
 backend/
-├── main.py                          # FastAPI app entry point
-├── requirements.txt                 # Python dependencies
-├── .env                            # API keys (don't commit!)
-├── ARCHITECTURE.md                 # Detailed documentation
-├── services/                       # LLM service layer
-│   ├── __init__.py
-│   ├── llm_service.py             # Abstract base class
-│   ├── gemini_provider.py         # Gemini implementation
-│   ├── openai_provider.py         # OpenAI implementation
-│   ├── llm_factory.py             # Factory + DI
-│   └── claude_provider_example.py # Example for new providers
+├── main.py                          # App entry: FastAPI init, CORS, router mount
+├── requirements.txt
+├── .env.example                     # Environment variable template
+├── test_api.py                      # Manual smoke tests for all endpoints
 └── routers/
-    └── chatRouter/
-        ├── __init__.py
-        └── chatRouter.py          # API endpoints (provider-agnostic!)
+    ├── __init__.py
+    ├── chatRouter/
+    │   └── chatRouter.py            # /chat route handlers
+    ├── models/
+    │   └── ChatModel.py             # Pydantic request/response models
+    └── services/
+        └── GeminiLLMService.py      # Google Gemini API wrapper
 ```
 
-## 🧪 Testing
+## Current State (POC)
 
-### Test Gemini Provider
-
-```bash
-curl -X POST http://localhost:8000/chat/generate \
-  -H "Content-Type: application/json" \
-  -d '{
-    "provider": "gemini",
-    "model": "gemini-2.0-flash-exp",
-    "prompt": "Hello!"
-  }'
-```
-
-### Test OpenAI Provider
-
-```bash
-curl -X POST http://localhost:8000/chat/generate \
-  -H "Content-Type: application/json" \
-  -d '{
-    "provider": "openai",
-    "model": "gpt-4o-mini",
-    "prompt": "Hello!"
-  }'
-```
-
-### List Providers
-
-```bash
-curl http://localhost:8000/chat/providers
-```
-
-### Get Models for a Provider
-
-```bash
-curl http://localhost:8000/chat/models/gemini
-```
-
-## 🎓 Design Patterns Used
-
-1. **Strategy Pattern**: Different providers = different strategies
-2. **Factory Pattern**: `LLMFactory` creates provider instances
-3. **Dependency Injection**: Router receives `LLMService` via factory
-4. **Abstract Base Class**: `LLMService` defines the contract
-
-## 📚 Additional Resources
-
-- See `ARCHITECTURE.md` for detailed documentation
-- See `services/claude_provider_example.py` for adding new providers
-- FastAPI docs: https://fastapi.tiangolo.com/
-- Google AI SDK: https://ai.google.dev/
-- OpenAI SDK: https://platform.openai.com/docs/
-
-## 🔒 Security Notes
-
-- Never commit `.env` file with real API keys
-- Add `.env` to `.gitignore`
-- Use environment variables in production
-- Validate user input in production
-- Implement rate limiting for production use
-
----
-
-**Your backend is now ready with a modular, extensible LLM architecture!** 🚀
+- Only Google Gemini is implemented. `openai` is installed as a dependency but has no provider class.
+- CORS is open to all origins (`*`) — restrict this before any public deployment.
+- Token usage in responses is estimated from word count, not actual API token data.
+- There is no authentication or rate limiting.
