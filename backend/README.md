@@ -15,7 +15,7 @@ cd backend
 # Create and activate a virtual environment
 python -m venv venv
 source venv/bin/activate        # macOS / Linux
-# venv\Scripts\activate         # Windows
+# venv/Scripts/activate         # Windows (bash)
 
 pip install -r requirements.txt
 ```
@@ -39,11 +39,11 @@ Interactive API docs: `http://localhost:8000/docs`
 
 ## Endpoints
 
-| Method | Path | Description |
-|---|---|---|
-| `GET` | `/` | Health check |
+| Method | Path             | Description                     |
+| ------ | ---------------- | ------------------------------- |
+| `GET`  | `/`              | Health check                    |
 | `POST` | `/chat/generate` | Generate a response from Gemini |
-| `GET` | `/chat/models` | List available Gemini models |
+| `GET`  | `/chat/models`   | List available Gemini models    |
 
 ### Generate a response
 
@@ -54,6 +54,7 @@ curl -X POST http://localhost:8000/chat/generate \
 ```
 
 Response:
+
 ```json
 {
   "content": "...",

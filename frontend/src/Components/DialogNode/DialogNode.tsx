@@ -1,19 +1,14 @@
 import { Position, Handle } from "@xyflow/react";
+import type { NodeProps } from "@xyflow/react";
 import { Copy, ThumbsUp, ThumbsDown, RefreshCw } from "lucide-react";
 
-import { Node } from "../../Models/Node";
 import ActionButton from "../ActionButton/ActionButton";
 
 import "./DialogNode.css";
 
-const DialogNode = (props: Node) => {
-  const { id, data, position, type } = props;
-  console.log("Rendering DialogNode:", {
-    id,
-    data,
-    type,
-  });
-  console.log("Node position:", position);
+type DialogNodeData = { userPrompt: string; response?: string };
+
+const DialogNode = (props: NodeProps & { data: DialogNodeData }) => {
   return (
     <div className="card-wrapper-page">
       {/* CARD CONTAINER */}
