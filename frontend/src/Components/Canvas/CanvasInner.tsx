@@ -8,7 +8,7 @@ import type { NodeTypes } from "@xyflow/react";
 
 import InputPanel from "../InputPanel/InputPanel";
 import { useNodeManipulation } from "../../CustomHooks/useNodeManipulation";
-import { useReactFlowChanges } from "../../CustomHooks/useReactFlowChanges";
+import { useCanvasStore } from "../../store/canvasStore";
 import DialogNode from "../DialogNode/DialogNode";
 
 const nodeTypes: NodeTypes = {
@@ -16,19 +16,8 @@ const nodeTypes: NodeTypes = {
 };
 
 export default function CanvasInner() {
-  // React Flow state management
-  const {
-    nodes,
-    edges,
-    setEdges,
-    setNodes,
-    onNodesChange,
-    onEdgesChange,
-    onConnect,
-  } = useReactFlowChanges();
-
-  // Custom hook for node manipulation
-  const { addNode } = useNodeManipulation(nodes, setNodes, setEdges);
+  const { nodes, edges, onNodesChange, onEdgesChange, onConnect } = useCanvasStore();
+  const { addNode } = useNodeManipulation();
 
   return (
     <ReactFlow

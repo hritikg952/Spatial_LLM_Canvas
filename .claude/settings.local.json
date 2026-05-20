@@ -11,7 +11,9 @@
       "Bash(bash start.sh)",
       "Bash(bash -c \"source venv/Scripts/activate && python -c 'from routers import chat_router' 2>&1\")",
       "mcp__plugin_playwright_playwright__browser_navigate",
-      "mcp__plugin_playwright_playwright__browser_evaluate"
+      "mcp__plugin_playwright_playwright__browser_evaluate",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)"
     ]
   }
 }
