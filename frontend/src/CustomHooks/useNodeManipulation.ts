@@ -62,7 +62,15 @@ const useNodeManipulation = () => {
           firstChunk = false;
         }
 
-        updateNodeResponse(nodeId, chunk);
+        for (const line of chunk.split("\n")) {
+          if (!line.trim()) continue;
+          try {
+            const parsed = JSON.parse(line);
+            updateNodeResponse(nodeId, parsed.content ?? line);
+          } catch {
+            updateNodeResponse(nodeId, line);
+          }
+        }
       }
     } catch (e) {
       updateNodeResponse(nodeId, "\n\n[Error: failed to get response]");
