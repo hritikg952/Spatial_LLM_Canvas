@@ -8,17 +8,11 @@ interface InputPanelProps {
 
 export default function InputPanel({ addNode }: InputPanelProps) {
   const [inputText, setInputText] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSend = () => {
     if (inputText.trim() === "") return;
     addNode(inputText);
-    setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      setInputText("");
-    }, 1000);
+    setInputText("");
   };
 
   return (
@@ -32,12 +26,8 @@ export default function InputPanel({ addNode }: InputPanelProps) {
           className="Input-Panel-Input"
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
         />
-        <button
-          onClick={handleSend}
-          disabled={isLoading}
-          className="Input-Panel-Button"
-        >
-          {isLoading ? "..." : "Send"}
+        <button onClick={handleSend} className="Input-Panel-Button">
+          Send
         </button>
       </div>
     </Panel>

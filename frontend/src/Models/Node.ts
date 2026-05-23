@@ -2,13 +2,13 @@ class Node {
   id: string;
   type: string;
   position: { x: number; y: number };
-  data: { userPrompt: string; response?: string };
+  data: { userPrompt: string; response?: string; isLoading?: boolean };
   measured?: { width: number; height: number };
 
   constructor(
     id: string,
     position: { x: number; y: number },
-    data: { userPrompt: string; response?: string },
+    data: { userPrompt: string; response?: string; isLoading?: boolean },
     type: string = "dialogNode"
   ) {
     this.id = id;
